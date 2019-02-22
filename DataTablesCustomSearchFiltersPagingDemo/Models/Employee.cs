@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic;
+using DataTablesCustomSearchFiltersPagingDemo.Utilities;
 
 namespace DataTablesCustomSearchFiltersPagingDemo.Models
 {
@@ -11,7 +14,7 @@ namespace DataTablesCustomSearchFiltersPagingDemo.Models
         public DateTime DateOfBirth { get; set; }
         public Department Department { get; set; }
 
-        public static List<Employee> GetSampleEmployees()
+        public static IEnumerable<Employee> GetSampleEmployees()
         {
             List<Department> departments = Department.GetSampleDepartments();
 
@@ -38,6 +41,86 @@ namespace DataTablesCustomSearchFiltersPagingDemo.Models
                 new Employee { Id = "fa33b926-d913-4b7d-9bab-63f6736d4b47", FirstName = "Shep", LastName = "Odger", DateOfBirth = new DateTime(1995, 7, 31), Department = departments[0] },
                 new Employee { Id = "4ec2fa72-b55e-45a6-9ac8-5935178a981f", FirstName = "Roldan", LastName = "Kording", DateOfBirth = new DateTime(1985, 7, 20), Department = departments[1] }
             };
+        }
+
+        public static IEnumerable<Employee> SearchEmployees(string searchTerm, int? take, int? skip, string orderBy, string orderDirection, Dictionary<string, object> filterProps)
+        {
+            IEnumerable<Employee> entities = FilterEmployees(searchTerm, filterProps);
+
+            if (!string.IsNullOrEmpty(orderBy))
+                entities = entities.OrderBy($"{orderBy} {orderDirection}");
+
+            if (take.HasValue && take > 0)
+                entities = entities.Take(take.Value);
+
+            if (skip.HasValue)
+                entities = entities.Skip(skip.Value);
+
+            return entities;
+        }
+
+        public static int TotalCount()
+        {
+            return GetSampleEmployees().Count();
+        }
+
+        public static int FilteredCount(string searchTerm, Dictionary<string, object> filterProps)
+        {
+            return FilterEmployees(searchTerm, filterProps).Count();
+        }
+
+        private static IEnumerable<Employee> FilterEmployees(string searchTerm, Dictionary<string, object> filterProps)
+        {
+            IEnumerable<Employee> employees = GetSampleEmployees();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+                employees = employees.Where(l => 
+                    l.FirstName.Contains(searchTerm) 
+                    || l.LastName.Contains(searchTerm) 
+                    || l.Department.Name.Contains(searchTerm)
+                    || l.DateOfBirth.Year.ToString().Contains(searchTerm)
+                    || l.DateOfBirth.Month.ToString().Contains(searchTerm)
+                    || l.DateOfBirth.Day.ToString().Contains(searchTerm));
+
+            foreach (KeyValuePair<string, object> filterProp in filterProps)
+            {
+                switch (filterProp.Key)
+                {
+                    case "FirstName":
+                        employees = employees.Where(l => l.FirstName.Contains((string)filterProp.Value));
+                        break;
+                    case "LastName":
+                        employees = employees.Where(l => l.LastName.Contains((string)filterProp.Value));
+                        break;
+                    case "Department.Name":
+                        employees = employees.Where(l => l.Department.Name.Contains((string)filterProp.Value));
+                        break;
+                    case "DateOfBirth":
+                        employees = FilterDateField(filterProp, employees);
+                        break;
+                }
+            }
+
+            return employees;
+        }
+
+        private static IEnumerable<Employee> FilterDateField(KeyValuePair<string, object> filterProp, IEnumerable<Employee> employees)
+        {
+            var dateSearchProps = (Dictionary<string, DateTime?>)filterProp.Value;
+            DateTime? minDate = dateSearchProps["MinDate"];
+            DateTime? maxDate = dateSearchProps["MaxDate"];
+
+            switch (filterProp.Key)
+            {
+                case "DateOfBirth":
+                    if (minDate.HasValue && SqlHelpers.IsValidSqlDate(minDate.Value))
+                        employees = employees.Where(l => l.DateOfBirth >= minDate);
+                    if (maxDate.HasValue && SqlHelpers.IsValidSqlDate(maxDate.Value))
+                        employees = employees.Where(l => l.DateOfBirth < maxDate.Value.Date.AddDays(1));
+                    break;
+            }
+
+            return employees;
         }
     }
 }

@@ -5,7 +5,17 @@
         ajax: {
             url: '/Home/GetEmployees',
             type: 'POST',
-            datatype: 'json'
+            datatype: 'json',
+            'data': function (dtParams) {
+                dtParams.columns[3].dateSearch = {
+                    minDate: '',
+                    maxDate: ''
+                }
+
+                console.log(dtParams);
+
+                return dtParams;
+            }
         },
         columns: [
             { title: 'Id', data: 'Id', visible: false },
