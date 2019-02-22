@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using DataTablesCustomSearchFiltersPagingDemo.Models;
 using Newtonsoft.Json;
 
@@ -13,9 +14,11 @@ namespace DataTablesCustomSearchFiltersPagingDemo.Controllers
 
         public string GetEmployees()
         {
-            var employees = Employee.GetSampleEmployees();
+            List<Employee> employees = Employee.GetSampleEmployees();
+            int recordsTotal = employees.Count;
+            int recordsFiltered = employees.Count;
 
-            return JsonConvert.SerializeObject(new { draw = 1, data = employees });
+            return JsonConvert.SerializeObject(new { draw = 1, recordsTotal, recordsFiltered, data = employees });
         }
     }
 }
