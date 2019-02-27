@@ -50,11 +50,11 @@ namespace DataTablesCustomSearchFiltersPagingDemo.Models
             if (!string.IsNullOrEmpty(orderBy))
                 entities = entities.OrderBy($"{orderBy} {orderDirection}");
 
-            if (take.HasValue && take > 0)
-                entities = entities.Take(take.Value);
-
             if (skip.HasValue)
                 entities = entities.Skip(skip.Value);
+
+            if (take.HasValue && take > 0)
+                entities = entities.Take(take.Value);
 
             return entities;
         }
