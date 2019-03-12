@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic;
@@ -75,9 +75,9 @@ namespace DataTablesCustomSearchFiltersPagingDemo.Models
 
             if (!string.IsNullOrEmpty(searchTerm))
                 employees = employees.Where(l => 
-                    l.FirstName.Contains(searchTerm) 
-                    || l.LastName.Contains(searchTerm) 
-                    || l.Department.Name.Contains(searchTerm)
+                    l.FirstName.ToLower().Contains(searchTerm.ToLower())
+                    || l.LastName.ToLower().Contains(searchTerm.ToLower())
+                    || l.Department.Name.ToLower().Contains(searchTerm.ToLower())
                     || l.DateOfBirth.Year.ToString().Contains(searchTerm)
                     || l.DateOfBirth.Month.ToString().Contains(searchTerm)
                     || l.DateOfBirth.Day.ToString().Contains(searchTerm));
@@ -87,10 +87,10 @@ namespace DataTablesCustomSearchFiltersPagingDemo.Models
                 switch (filterProp.Key)
                 {
                     case "FirstName":
-                        employees = employees.Where(l => l.FirstName.Contains((string)filterProp.Value));
+                        employees = employees.Where(l => l.FirstName.ToLower().Contains(((string)filterProp.Value).ToLower()));
                         break;
                     case "LastName":
-                        employees = employees.Where(l => l.LastName.Contains((string)filterProp.Value));
+                        employees = employees.Where(l => l.LastName.ToLower().Contains(((string)filterProp.Value).ToLower()));
                         break;
                     case "Department.Name":
                         employees = employees.Where(l => l.Department.Name.Contains((string)filterProp.Value));

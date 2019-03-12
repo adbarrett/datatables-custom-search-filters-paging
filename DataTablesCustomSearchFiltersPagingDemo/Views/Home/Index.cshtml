@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<string>
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -10,6 +11,48 @@
 <div class="page-header">
     <h2 class="text-center">Employees</h2>
 </div>
+
+<form>
+    <div class="row form-group">
+        <label class="col-md-3 col-form-label">First Name</label>
+        <div class="col-md-3">
+            <div class="input-group">
+                <input class="form-control" type="text" id="first-name-filter" />
+            </div>
+        </div>
+        <label class="col-md-3 col-form-label">Last Name</label>
+        <div class="col-md-3">
+            <div class="input-group">
+                <input class="form-control" type="text" id="last-name-filter" />
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-2 col-form-label">Date of Birth</label>
+        <label class="col-md-1 col-form-label">From</label>
+        <div class="col-md-3">
+            <div class="input-group">
+                <input class="form-control date-filter" type="date" id="from-date-filter" />
+            </div>
+        </div>
+        <label class="col-md-3 col-form-label">To</label>
+        <div class="col-md-3">
+            <div class="input-group">
+                <input class="form-control date-filter" type="date" id="to-date-filter" />
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 col-form-label">Department</label>
+        <div class="col-md-9">
+            <div class="input-group">
+                @Html.DropDownList("Department", new SelectList(Model), "Please select a department...", new { @class = "form-control", id = "department-filter" })
+            </div>
+        </div>
+    </div>
+</form>
+
+<hr />
 
 <div class="row">
     <div class="col-md-12">

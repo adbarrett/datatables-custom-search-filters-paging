@@ -12,7 +12,9 @@ namespace DataTablesCustomSearchFiltersPagingDemo.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            List<string> departments = Department.GetSampleDepartments().Select(d => d.Name).ToList();
+
+            return View(departments);
         }
 
         public string GetEmployees(DataTableAjaxPostViewModel model)
