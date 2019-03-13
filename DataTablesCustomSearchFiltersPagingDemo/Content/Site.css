@@ -1,4 +1,4 @@
-﻿body {
+body {
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -21,4 +21,28 @@ input,
 select,
 textarea {
     max-width: 280px;
+#paging-options {
+    margin-top: 20px;
+}
+
+.pagination {
+    -ms-border-radius: 0;
+    border-radius: 0;
+    margin: 0;
+}
+.pagination > li:first-child > span {
+    -ms-border-top-left-radius: 0;
+    border-top-left-radius: 0;
+    -ms-border-bottom-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.pagination > li:last-child > span {
+    -ms-border-top-right-radius: 0;
+    border-top-right-radius: 0;
+    -ms-border-bottom-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#page-length {
+    max-width: 75px;
 }
