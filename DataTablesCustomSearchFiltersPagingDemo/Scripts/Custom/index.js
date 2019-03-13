@@ -1,4 +1,4 @@
-$(document).ready(function() {
+﻿$(document).ready(function() {
     $('#employees-list').DataTable({
         processing: true,
         serverSide: true,
@@ -6,13 +6,11 @@ $(document).ready(function() {
             url: '/Home/GetEmployees',
             type: 'POST',
             datatype: 'json',
-            'data': function (dtParams) {
+            data: function (dtParams) {
                 dtParams.columns[3].dateSearch = {
                     minDate: $('#from-date-filter').val(),
                     maxDate: $('#to-date-filter').val()
                 }
-
-                console.log(dtParams);
 
                 return dtParams;
             }
